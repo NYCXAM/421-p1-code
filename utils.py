@@ -21,6 +21,13 @@ def random_node(size):
 def visit(curr_node, visited, graph):
     raise NotImplementedError
 
+def path_length(path, matrix):
+    length = 0
+    for i in range(len(path) - 2):
+        length += matrix[path[i]][path[i + 1]]
+
+    return length
+
 # Nearest Neighbor
 def NN(filename):
     matrix = parse_graph(filename)
@@ -43,9 +50,29 @@ def NN(filename):
     return path
 
 # NN with 2-Opt
-def NN_2opt():
-    raise NotImplementedError
+def NN_2opt(filename):
+    matrix = parse_graph(filename)
+    path = NN(filename)
+    better_path = True
+    while better_path:
+        better_path = False
+        for i in range(1, len(path) - 2):
+            for j in range(i + 1, len(path) - 1):
+                old_dist = matrix[path[i - 1]][path[i]] + matrix[path[j]][path[j + 1]]
+                new_dist = matrix[path[i - 1]][path[j]] + matrix[path[i]][path[j + 1]]
+                if new_dist < old_dist:
+                    path[i:j+1] = reversed(path[i:j+1])
+                    better_path = True
+                    break
+            if better_path:
+                break
+    return path
+
 
 # Repeated Random NN
-def RRNN():
-    raise NotImplementedError
+def RRNN(filename, k, num_repeats):
+    matrix = parse_graph(filename)
+    path = []
+    for _ in range(num_repeats):
+
+
