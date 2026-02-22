@@ -73,6 +73,44 @@ def NN_2opt(filename):
 def RRNN(filename, k, num_repeats):
     matrix = parse_graph(filename)
     path = []
+    best_dist = float('inf')
+
     for _ in range(num_repeats):
+        # random nearest neighbor part
+        curr_node = random_node(len(matrix))
+        unvisited, curr_path = [], []
+
+        unvisited.append(curr_node)
+        curr_path.append(curr_node)
+
+        while unvisited:
+            neighbors = []
+            for node in unvisited:
+                neighbors.append((matrix[curr_node][node], node))
+
+            neighbors.sort(key=lambda x: x[0])
+            limit = min(k, len(neighbors))
+            next_node = random_node(neighbors[:limit])[1]
+
+            path.append(next_node)
+            unvisited.remove(next_node)
+            curr_node = next_node
+
+        path.append(path[0])
+
+        # 2opt part
+        better_path = True
+        while better_path:
+            better_path = False
+            for i in range(1, len(path) - 2):
+                for j in range(i + 1, len(path) - 1):
+                    old_dist = matrix[path[i - 1]][path[i]] + matrix[path[j][path[j + 1]]]
+                    new_dist = matrix[path[i - 1]][path[j]] + matrix[path[j][path[j + 1]]]
+
+                    if new_dist < old_dist:
+
+        path.append(path[0])
+        return path
+
 
 
