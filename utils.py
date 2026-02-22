@@ -1,4 +1,5 @@
 import math
+import os
 import sys
 from random import random
 
@@ -18,15 +19,20 @@ def parse_graph(filename):
 def random_node(size):
     return round(random() * size)
 
-def visit(curr_node, visited, graph):
-    raise NotImplementedError
-
 def path_length(path, matrix):
     length = 0
     for i in range(len(path) - 2):
         length += matrix[path[i]][path[i + 1]]
 
     return length
+
+def random_matrices(size):
+    all_matrices = []
+    for m in os.listdir('\matrices'):
+        if os.path.isfile(os.paht.join('matrices', m)):
+            all_matrices.append(parse_graph('matrices/' + m))
+    return random.sample(all_matrices, size)
+
 
 # Nearest Neighbor
 def NN(filename):
@@ -108,9 +114,17 @@ def RRNN(filename, k, num_repeats):
                     new_dist = matrix[path[i - 1]][path[j]] + matrix[path[j][path[j + 1]]]
 
                     if new_dist < old_dist:
+                        path[i:j+1] = reversed(path[i:j+1])
+                        better_path = True
+                        break
+                if better_path:
+                    break
 
-        path.append(path[0])
-        return path
+        curr_dist = path_length(path, matrix)
+        if curr_dist < best_dist:
+            best_dist = curr_dist
+            best_path = path
+    return best_path
 
 
 
