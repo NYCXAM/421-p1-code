@@ -138,28 +138,34 @@ def Astar(filename):
     while min_heap:
         f, _, g, curr_node, unvisited, path = heapq.heappop(min_heap)
 
-        # if a shorter path is already found
+        # goal state: visited all cities and returned to the start
+        if not unvisited and curr_node == start_node:
+            return path, g, nodes_expanded
+
         if g > best_g.get((curr_node, unvisited), float('inf')):
             continue
 
-        # goal state
+        # if unvisited is empty, our only valid move is to return to the start node
         if not unvisited:
-            return_cost = matrix[curr_node][start_node]
-            total_cost = g + return_cost
-            path = path + [start_node]
-            return path, total_cost, nodes_expanded
+            final_g = g + matrix[curr_node][start_node]
+            state_key = (start_node, unvisited)
+
+            if final_g < best_g.get(state_key, float('inf')):
+                best_g[state_key] = final_g
+                final_path = path + [start_node]
+                # h=0 since no cities remain, so f = final_g
+                heapq.heappush(min_heap, (final_g, next(tie_breaker), final_g, start_node, unvisited, final_path))
+            continue
 
         for next_node in unvisited:
             new_g = g + matrix[curr_node][next_node]
             new_unvisited = unvisited - frozenset([next_node])
             state_key = (next_node, new_unvisited)
 
-            # prune before heuristic
             if new_g >= best_g.get(state_key, float('inf')):
                 continue
 
             best_g[state_key] = new_g
-
             new_h = MST_heuristic(matrix, next_node, new_unvisited)
             nodes_expanded += 1
 
