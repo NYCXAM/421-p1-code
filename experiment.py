@@ -216,9 +216,9 @@ def part3_1(matrices):
 
 def part3_2(single_matrix):
     return {
-        "HC_history": algos.hill_climbing(single_matrix, 50, True),
-        "SA_history": algos.simulated_annealing(single_matrix, 0.95, 1000, 500, True),
-        "GA_history": algos.genetic_algorithm(single_matrix, 0.1, 20, 50, True)
+        "HC_history": algos.hill_climbing(single_matrix, 50, track_history=True)[1],
+        "SA_history": algos.simulated_annealing(single_matrix, 0.95, 1000, 500, track_history=True)[1],
+        "GA_history": algos.genetic_algorithm(single_matrix, 0.1, 20, 50, track_history=True)[1]
     }
 
 
@@ -353,21 +353,21 @@ def main():
         part2_1_result["real_time_ratio"],
         "Matrix sizes",
         "Real time / A* real time",
-        "Real time vs A*",
+        "Real time vs A* (normalized)",
     )
     vis.draw_multi_line_plot(
         sizes_p2,
         part2_1_result["cpu_time_ratio"],
         "Matrix sizes",
         "CPU time / A* CPU time",
-        "CPU time vs A*",
+        "CPU time vs A* (normalized)",
     )
     vis.draw_multi_line_plot(
         sizes_p2,
         part2_1_result["cost_ratio"],
         "Matrix sizes",
         "Cost / A* cost",
-        "Path cost vs A*",
+        "Path cost vs A* (normalized)",
     )
 
     # Part 2.2
